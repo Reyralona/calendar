@@ -1,19 +1,32 @@
 const MONTHS = [
-   [1, 31],
-   [2, 28],
-   [3, 31],
-   [4, 30],
-   [5, 31],
-   [6, 30],
-   [7, 31],
-   [8, 31],
-   [9, 30],
-   [10, 31],
-   [11, 30],
-   [12, 31],
-]
+  [1, 31],
+  [2, 28],
+  [3, 31],
+  [4, 30],
+  [5, 31],
+  [6, 30],
+  [7, 31],
+  [8, 31],
+  [9, 30],
+  [10, 31],
+  [11, 30],
+  [12, 31],
+];
 
-const MONTHNAMES = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+const MONTHNAMES = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
 
 function title(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -24,7 +37,7 @@ function getDate(year, month, day) {
 }
 
 function getMonth(year, month) {
-  let md = MONTHS[month]
+  let md = MONTHS[month];
   let offset = new Date(getDate(year, md[0], 1)).getDay();
 
   let outdiv = `
@@ -48,7 +61,13 @@ function getMonth(year, month) {
 
   for (let i = 1; i <= md[1]; i++) {
     let day = new Date(getDate(year, md[0], i)).getDate();
-    let el = `<div>${day}</div>`;
+    let el = `
+    <div 
+      class="day" 
+      year="${year}" 
+      month="${MONTHNAMES[md[0]]}" 
+      day="${day}">${day}
+    </div>`;
     outdiv += el;
   }
 
@@ -57,15 +76,49 @@ function getMonth(year, month) {
   calendar.insertAdjacentHTML("beforeend", outdiv);
 }
 
-function getAllMonthsInYear(year){
-  yearelement.innerText = year;
+function getAllMonthsInYear(year) {
+  calendar.insertAdjacentHTML("afterbegin", `<h1 class="year">${year}</h1>`);
   for (let i = 0; i < 12; i++) {
     getMonth(year, i);
   }
-
 }
 
-const calendar = document.querySelector(".calendar");
-const yearelement = calendar.querySelector(".year");
+async function getwikidata(type, month, day) {
+  // types: births, deaths, events, holidays
+  var response = await fetch(apikey + `/${type}/${month}/${day}`);
+  var data = response.json();
+  return data;
+}
 
-getAllMonthsInYear(1996)
+async function thatDayinYear(day, month, year) {
+  let out = {"births": [], "deaths": [], "events": [], "holidays": []}
+  for (let t in out) {
+    let data = await getwikidata(t, month, day);
+    for (const i in data[t]) {
+      let info = data[t][i];
+      if (info["year"] === year) {
+        out[t].push(info)
+      }
+    }
+  }
+  return out;
+}
+
+const apikey = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday`;
+const calendar = document.querySelector(".calendar");
+
+getAllMonthsInYear(1854);
+document.querySelectorAll(".day").forEach(el => {
+  el.onclick = (e) =>{
+    let el = e.target
+    let day = el.getAttribute("day")
+    let month = el.getAttribute("month")
+    let year = el.getAttribute("year")
+    console.log(day, month, year)
+  }
+})
+
+getYearInfo(2001)
+// let data = await thatDayinYear("6", "6", 1944);
+// console.log(data)
+

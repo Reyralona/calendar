@@ -1,26 +1,38 @@
-*{
+/* *{
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-}
+} */
 body{
     width: 100vw;
-    height: 100vh;
+    margin-bottom: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: aliceblue;
+    overflow-x: hidden;
+    font-family: monospace;
 }
 
 .calendar{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 30px;
+    grid-column-gap: 50px;
+    padding: 10px 50px 10px 50px;
+    border: 1px solid black;
+    border-radius: 10px;
 }
 
 .month{
     text-align: center;
+}
+.year{
+    grid-column: span 3;
+    text-align: center;
+    font-size: 60px;
+    padding: 5px 10px 5px 10px;
+    margin: 0px;
 }
 .weekdays{
     display: flex;
@@ -33,4 +45,13 @@ body{
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
+}
+
+.day{
+    padding: 2px;
+}
+.day:hover{
+    cursor: pointer;
+    background-color: rgb(161, 161, 161);
+    border-radius: 10px;
 }
