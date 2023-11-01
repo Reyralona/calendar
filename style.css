@@ -1,57 +1,164 @@
-/* *{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-} */
-body{
-    width: 100vw;
-    margin-bottom: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: aliceblue;
-    overflow-x: hidden;
-    font-family: monospace;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+body {
+  width: 100vw;
+  /* height: 100vh; */
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--backcolor);
+  overflow-x: hidden;
+  font-family: monospace;
 }
 
-.calendar{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-column-gap: 50px;
-    padding: 10px 50px 10px 50px;
-    border: 1px solid black;
-    border-radius: 10px;
+:root {
+  --backcolor: #222;
+  --bordercolor: white;
+  --fontcolor: white;
 }
 
-.month{
-    text-align: center;
-}
-.year{
-    grid-column: span 3;
-    text-align: center;
-    font-size: 60px;
-    padding: 5px 10px 5px 10px;
-    margin: 0px;
-}
-.weekdays{
-    display: flex;
-    gap: 10px;
-    padding: 0px 5px 0px 5px;
-    justify-content: space-between;
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--bordercolor);
+  border-radius: 10px;
+  color: var(--fontcolor);
+  padding: 20px 50px 20px 50px;
+  
 }
 
-.days{
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 50px;
+  grid-row-gap: 20px;
+  position: relative;
 }
 
-.day{
-    padding: 2px;
+.month {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: center;
 }
-.day:hover{
-    cursor: pointer;
-    background-color: rgb(161, 161, 161);
-    border-radius: 10px;
+.year {
+  grid-column: span 3;
+  text-align: center;
+  font-size: 60px;
+  padding: 5px 10px 5px 10px;
+  margin: 0px;
+  background-color: var(--backcolor);
+  border: none;
+  color: white;
+  font-family: monospace;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.weekdays {
+  display: flex;
+  gap: 10px;
+  padding: 0px 5px 0px 5px;
+  justify-content: space-between;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.day {
+  padding: 2px;
+}
+.day:hover {
+  cursor: pointer;
+  background-color: rgb(161, 161, 161);
+  border-radius: 10px;
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content; /* Need a specific value to work */
+  height: fit-content;
+  background-color: var(--backcolor);
+  border-radius: 5px;
+  border: 1px solid var(--bordercolor);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+table{
+    border-collapse: collapse;
+}
+table th{
+    background-color: #acacac;
+    color: rgb(0, 0, 0);
+}
+table th, tr, td{
+    border: 1px solid var(--bordercolor);
+    padding: 10px;
+}
+
+.exit {
+  border: none;
+  font-size: 30px;
+  border-radius: 5px;
+  color: var(--fontcolor);
+  background-color: var(--backcolor);
+}
+.exit:hover {
+  cursor: pointer;
+  color: grey;
+  background-color: var(--backcolor);
+}
+
+.unclickable {
+  pointer-events: none;
+}
+
+.fadein {
+  animation: fadein 0.2s ease forwards;
+}
+
+.fadeout {
+  animation: fadeout 0.2s ease forwards;
+}
+
+@keyframes fadein {
+  from {
+    transform: scale(0%);
+  }
+  to {
+    transform: scale(100%);
+  }
+}
+
+@keyframes fadeout {
+  from {
+    transform: scale(100%);
+  }
+  to {
+    transform: scale(0%);
+  }
 }

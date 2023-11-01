@@ -65,7 +65,7 @@ function getMonth(year, month) {
     <div 
       class="day" 
       year="${year}" 
-      month="${MONTHNAMES[md[0]]}" 
+      month="${MONTHNAMES[md[0]-1]}" 
       day="${day}">${day}
     </div>`;
     outdiv += el;
@@ -77,7 +77,6 @@ function getMonth(year, month) {
 }
 
 function getAllMonthsInYear(year) {
-  calendar.insertAdjacentHTML("afterbegin", `<h1 class="year">${year}</h1>`);
   for (let i = 0; i < 12; i++) {
     getMonth(year, i);
   }
@@ -104,21 +103,88 @@ async function thatDayinYear(day, month, year) {
   return out;
 }
 
+async function createCard(day, month, year){
+  if(document.querySelector(".card")){
+    destroycard()
+  }
+  
+  let cardel = `
+  <div class="card fadein">
+    <div class="cardnav">
+      <button class="exit">X</button>
+      <h1>${title(month)} ${day} ${year}</h1>
+    </div>
+    <div id="data"><h1>Loading information...</h1></div>
+  </div>`
+  calendar.insertAdjacentHTML("beforeend", cardel);
+  let card = document.querySelectorAll(".card")
+
+  for(let i = 0; i < card.length; i++){
+      card[i].querySelector(".exit").onclick = () => {destroycard()}
+  }
+
+  let data = await thatDayinYear(Number(day), Number(MONTHNAMES.indexOf(month)+1) , Number(year))
+  writeToCard(data)
+}
+
+function writeToCard(data){
+  let types = ["births", "deaths", "events", "holidays"]
+  let el = `<table>`
+  let totalEmpty = 0;
+  for(let i = 0; i < types.length; i++){
+    if(data[types[i]].length > 0){
+      el += `<tr><th>${title(types[i])}</th><tr>`
+      for(let j = 0; j < data[types[i]].length; j++){
+        el += `<tr><td>${data[types[i]][j]["text"]}</td><tr>`
+      }
+    } else {
+      totalEmpty += 1;
+    }
+  }
+  el += `</table>`
+  if(totalEmpty == types.length){
+    el = `<h1>No information for this day</h1>`
+  }
+
+  document.querySelector("#data").innerHTML = el
+}
+
+function destroycard(){
+  let card = document.querySelector(".card")
+  card.classList.remove("fadein")
+  card.classList.add("fadeout")
+  card.classList.add("unclickable")
+ 
+  setTimeout(() => {
+    card.remove()
+  }, 500);
+  
+}
+
+function setupYear(year){
+  getAllMonthsInYear(year);
+  document.querySelectorAll(".day").forEach(el => {
+    el.onclick = (e) =>{
+      let el = e.target
+      let day = el.getAttribute("day")
+      let month = el.getAttribute("month")
+      let year = el.getAttribute("year")
+      createCard(day, month, year)
+    }
+  })
+  
+}
+
 const apikey = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday`;
 const calendar = document.querySelector(".calendar");
+const year = document.querySelector("#year")
 
-getAllMonthsInYear(1854);
-document.querySelectorAll(".day").forEach(el => {
-  el.onclick = (e) =>{
-    let el = e.target
-    let day = el.getAttribute("day")
-    let month = el.getAttribute("month")
-    let year = el.getAttribute("year")
-    console.log(day, month, year)
-  }
-})
 
-getYearInfo(2001)
-// let data = await thatDayinYear("6", "6", 1944);
-// console.log(data)
+setupYear(2023)
+
+year.onchange = () => {
+  calendar.innerHTML = null;
+  setupYear(year.value)
+}
+
 
